@@ -1,5 +1,14 @@
 ## smartSessions
 
+# Deploy 
+
+Для создания пакета для установки в MODX выполните команды:
+
+```shell
+make remake
+make package-deploy
+```
+
 Это компонент для MODX Revolution, который заменяет стандартный обработчик сессий modSessionHandler,
 добавляя следующую информацию к записям сессий:
 * user_agent
