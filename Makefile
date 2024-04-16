@@ -69,12 +69,11 @@ package-build-deploy:
 	docker compose exec app bash -c "export PACKAGE_DEPLOY=True && php Extras/${PACKAGE_NAME}/_build/build.php"
 
 package-target-clear:
-	docker compose exec app bash -c 'rm -rf target'
+	docker compose exec app bash -c 'rm -rf target/*'
 
 package-deploy:
 	@make package-target-clear
-	@make package-build
-	@make package-build-encryption
+	@make package-build-deploy
 
 
 package-create-new:

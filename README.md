@@ -6,6 +6,8 @@
 
 ```shell
 make remake
+```
+```shell
 make package-deploy
 ```
 
