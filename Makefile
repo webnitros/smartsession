@@ -109,7 +109,6 @@ test:
 
 # Fast start
 run-app:
-	@make package-create-new
 	@make remake
 	sleep 3
 	@make package-build
