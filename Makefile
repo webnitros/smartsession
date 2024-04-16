@@ -80,6 +80,10 @@ package-deploy:
 package-create-new:
 	docker run --rm -ePACKAGE_NAME="${PACKAGE_NAME}" -v ./Extras:/var/www/html/Extras webnitros/modx-app:latest php Extras/myapp/rename_it.php
 
+package-reinstall:
+	@make package-build
+	@make package-install
+
 
 #######################
 # Gitify
@@ -111,3 +115,4 @@ run-app:
 	@make package-build
 	@make package-install
 	@make user-info
+

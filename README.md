@@ -1,66 +1,39 @@
-# Creating an components for MODX Revolution 2 in Docker
+## smartSessions
 
-Rapid application deployment for MODX Revolution 2
+Это компонент для MODX Revolution, который заменяет стандартный обработчик сессий modSessionHandler,
+добавляя следующую информацию к записям сессий:
+* user_agent
+* user_id — если пользователь авторизован
+* ip — ip адрес
 
-```shell
-cp .env.example .env
+Благодаря этому можно получить расширенную информацию о посетителях на вашем сайте, 
+а также по-разному хранить сессии, например, очищать сессии поисковых ботов чаще, 
+чем сессии реальных пользователей, тем самым уменьшить размер базы данных
+
+
+## Установка
+1. Установите пакет из репозитория (или соберите сами из исходников)
+2. В системной настойке `session_handler_class` поставьте значение `smartSessionHandler`
+3. Проверьте, что данные записываются в таблицу `modx_smart_sessions`. Таблица `modx_sessions` теперь не используется.
+
+## Настройки
+Доступные следующие настройки:
+
+* `smartsessions_bot_signatures` — список сигнатур поисковых ботов, разделенных вертикальной чертой,
+  для поиска типа LIKE по полю user_agent. Добавьте сюда ботов, которые часто посещают ваш сайт.
+* `smartsessions_bots_gc_maxlifetime` — время жизни сессий ботов, указанных в настройке smartsessions_bot_signatures.
+  Уменьшая его вы уменьшите срок хранения сессий ботов и сократите размер таблицы с сессиями.
+* `smartsessions_empty_user_agent_gc_maxlifetime` — время жизни сессий с пустым User-Agent. 
+  Как правило, его можно сделать таким же как и для ботов.
+* `smartsessions_authorized_users_gc_maxlifetime` — время жизни сессий авторизованных пользователей. 
+  Вы можете увеличить его и сделать значение больше, чем в настройке session_gc_maxlifetime.
+
+## Полезное
+SQL запрос для просмотра количества сессий, сгруппированных по user_agent 
+(поможет узнать каких сессий больше всего у вас на сайте):
 ```
-
-Change your package name `PACKAGE_NAME=myExtra` [.env](.env)
-
-## Fast start
-
-Create directory `Extras/myapp` and run docker container
-
-```shell
-make run-app # all steps in one
+SELECT `user_agent`, COUNT(*) 
+   FROM `modx_smart_sessions` 
+   GROUP BY `user_agent` 
+   ORDER BY `COUNT(*)` DESC
 ```
-
-## Steps install
-
-```shell
-make package-create-new # Rename package from .env PACKAGE_NAME
-```
-
-### Run project
-
-```shell
-make remake
-```
-
-### Build transport package for dev
-
-```shell
-make package-build  
-```
-
-### Install package system
-
-```shell
-make package-install 
-```
-
-Then you can work with files from the `Extras/myapp` directory
-
-# Gitify
-
-[github документация](https://modmore.github.io/Gitify/ru/)
-
-Change your `packages` install file [.gitify](.gitify)
-
-Default:
-
-- ace-1.9.4-pl
-- adminpanel-1.1.0-pl
-- moddevtools-1.2.1-pl
-- pdotools-2.13.2-pl
-
-### Build for repository
-
-```shell
-make package-build-deploy # your zip pack to dist ./target
-```
-
-### All commands
-
-See [Makefile](Makefile)
